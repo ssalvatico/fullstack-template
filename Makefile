@@ -14,14 +14,14 @@ stop: ## Baja los contenedores
 
 restart: stop run
 
-build: ## Reconstruye las imágenes y levanta
+build: ## Reconstruye las imágenes
 	docker compose build
-	docker compose up -d
+	@echo "Levantar el proyecto con 'make run'"
 
-sh: ## Entra al contenedor PHP
+ssh-be: ## Entra al contenedor PHP
 	docker compose exec --user $(UID):$(GID) php bash
 
-sh-db: ## Entra a la consola de MySQL
+ssh-db: ## Entra a la consola de MySQL
 	docker compose exec db mysql -uroot -proot $(PROJECT_NAME) -A
 
 logs: ## Sigue los logs
