@@ -2,35 +2,31 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\TemplateEntityRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TemplateEntityRepository::class)]
 #[ApiResource]
-class TemplateEntity
+class TemplateEntity extends BaseEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
     #[ORM\Column]
     private ?bool $active = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    /**
+     * @var Collection<int, TemplateItem>
+     */
+    #[ORM\OneToMany(targetEntity: TemplateItem::class, mappedBy: 'entity')]
+    private Collection $items;
 
-    public function setId(string $id): static
+    public function __construct()
     {
-        $this->id = $id;
-
-        return $this;
+        $this->items = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -41,7 +37,6 @@ class TemplateEntity
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -53,7 +48,34 @@ class TemplateEntity
     public function setActive(bool $active): static
     {
         $this->active = $active;
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, TemplateItem>
+     */
+    public function getItems(): Collection
+    {
+        return $this->items;
+    }
+
+    public function addItem(TemplateItem $item): static
+    {
+        if (!$this->items->contains($item)) {
+            $this->items->add($item);
+            $item->setEntity($this);
+        }
+        return $this;
+    }
+
+    public function removeItem(TemplateItem $item): static
+    {
+        if ($this->items->removeElement($item)) {
+            // set the owning side to null (unless already changed)
+            if ($item->getEntity() === $this) {
+                $item->setEntity(null);
+            }
+        }
         return $this;
     }
 }

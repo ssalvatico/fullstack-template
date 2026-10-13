@@ -1,3 +1,4 @@
+PROJECT_NAME := api_template
 UID := $(shell id -u)
 GID := $(shell id -g)
 
@@ -5,6 +6,8 @@ GID := $(shell id -g)
 
 run: ## Levanta los contenedores
 	docker compose up -d
+	@echo "Proyecto corriendo en http://localhost:8080/"
+	@echo "PhpMyAdmin corriendo en http://localhost:8081/"
 
 stop: ## Baja los contenedores
 	docker compose stop
@@ -18,8 +21,8 @@ build: ## Reconstruye las imágenes y levanta
 sh: ## Entra al contenedor PHP
 	docker compose exec --user $(UID):$(GID) php bash
 
-sh-db: ## Entra al contenedor de MySQL
-	docker compose exec db bash
+sh-db: ## Entra a la consola de MySQL
+	docker compose exec db mysql -uroot -proot $(PROJECT_NAME) -A
 
 logs: ## Sigue los logs
 	docker compose logs -f
