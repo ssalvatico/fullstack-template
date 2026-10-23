@@ -2,3 +2,19 @@
     height: 100%;
     width: 250px;
 }
+
+.entities-title {
+    color: #f8fafc;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #6366f1;
+    position: relative;
+}
+
+.entities-title i {
+    color: #818cf8;
+    font-size: 1.2rem;
+}

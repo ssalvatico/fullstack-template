@@ -1,11 +1,14 @@
 <div class="bg-dark border-right p-3 min-vh-100" id="sidebar">
-    <h3 class="text-light">Entidades</h3>
-    <hr class="text-white">
+
+    <h3 class="entities-title">Lista de entidades</h3>
 
     <div class="list-group list-reset">
-        <span class="text-light">ejemplo</span>
-        <span class="text-light">ejemplo</span>
-        <span class="text-light">ejemplo</span>
-        <span class="text-light">ejemplo</span>
+        @for (entityElem of entities(); track entityElem[0]) {
+            <button
+                class="list-group-item list-group-item-action"
+                
+            >{{ entityElem[0] }}
+            </button>
+        }
     </div>
 </div>
