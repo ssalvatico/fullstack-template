@@ -9,8 +9,8 @@ import { env } from '../../environment/env';
   providedIn: 'root'
 })
 export class ApiService {
-  private _entityList = signal<[string, string][]>([]);
-  public entityList = this._entityList.asReadonly();
+  private _entities = signal<[string, string][]>([]);
+  public entities = this._entities.asReadonly();
 
   constructor(private http: HttpClient) {}
 
@@ -18,7 +18,7 @@ export class ApiService {
     return this.http.get<ApiRoot>(`${env.BASE_URL}${env.API_ENDPOINT}`).pipe(
       map(response => this.removeJsonLdKeywords(response)),
       map(entities => Object.entries(entities) as [string, string][]),
-      tap(entities => this._entityList.set(entities))
+      tap(entities => this._entities.set(entities))
     );
   }
 

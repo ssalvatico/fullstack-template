@@ -10,7 +10,7 @@ import { ApiService } from '../../../entities/services/backend.service';
 export class EntityListComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  public entities = this.apiService.entityList;
+  public entities = this.apiService.entities;
   public selectedEntity = signal<string | null>(null);
   private _items = signal<unknown[]>([]);
   public items = this._items.asReadonly();
