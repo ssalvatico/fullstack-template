@@ -25,9 +25,14 @@
                     @for (row of items(); track $index) {
                         <tr>
                             @for (key of columns(); track key) {
-                                <td class="align-middle">
-                                    {{ formatValue(row[key]) }}
-                                </td>
+                                @if (key === 'items') {
+
+                                    <td class="align-middle">
+                                        {{ formatValue(row[key]) }}
+                                    </td>
+                                } @else {
+                                    hola
+                                }
                             }
 
                             <td class="align-middle">
