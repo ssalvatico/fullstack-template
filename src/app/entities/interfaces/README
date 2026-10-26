@@ -1,0 +1,4 @@
+Para generar las interfaces de las entidades de manera dinámica:
+NODE_TLS_REJECT_UNAUTHORIZED=0 npm init @api-platform/client http://localhost:8080/api src/ -- --generator typescript
+
+Tengo que hacer dinámico este proceso, y el código debe ser versátil

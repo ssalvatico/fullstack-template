@@ -10,12 +10,23 @@ import { ApiService } from '../../../entities/services/backend.service';
 export class EntityListComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  entities = signal<[string, string][]>([]);
+  public entities = this.apiService.entityList;
+  public selectedEntity = signal<string | null>(null);
+  private _items = signal<unknown[]>([]);
+  public items = this._items.asReadonly();
 
   ngOnInit(): void {
     this.apiService.getEntities().subscribe({
-      next: entities => this.entities.set(entities),
       error: error => console.error('Error al obtener las entidades:', error),
+    });
+  }
+
+  getEntityData([name, endpoint]: [string, string]): void {
+    this.selectedEntity.set(name);
+    this.apiService.getEntityProperties(endpoint).subscribe({
+      next: items => {this._items.set(items); console.table(this._items())},
+      //TODO tengo que conectar el objeto con los campos al homepage para renderizar la vista
+      error: error => console.error('Error al obtener las propiedades:', error),
     });
   }
 }
