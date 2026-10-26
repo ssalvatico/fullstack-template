@@ -1,4 +1,23 @@
-<h1>Render entity works</h1>
-@for (entity of entities; track $index) {
-    <p>{{ entity | json }}</p>
+@if (items().length) {
+    <h4>{{ entityName() }}</h4>
+    <table class="table table-sm table-striped">
+    <thead>
+        <tr>
+        @for (key of columns(); track key) {
+            <th>{{ key }}</th>
+        }
+        </tr>
+    </thead>
+    <tbody>
+        @for (row of items(); track $index) {
+        <tr>
+            @for (key of columns(); track key) {
+            <td>{{ formatValue(row[key]) }}</td>
+            }
+        </tr>
+        }
+    </tbody>
+    </table>
+} @else {
+    <p>Seleccioná una entidad de la lista.</p>
 }

@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
+import { EntityRow } from '../../services/entity-state.service';
 
 @Component({
   selector: 'app-entities-render-entity',
@@ -7,6 +8,17 @@ import { Component, Input } from '@angular/core';
   styleUrl: './render-entity.component.css',
 })
 export class RenderEntityComponent {
-  @Input()
-  public entityItems:unknown[] = []
+  public entityName = input<string | null>(null);
+  public items = input<EntityRow[]>([]);
+
+  public columns = computed(() => {
+    const first = this.items()[0];
+    return first ? Object.keys(first).filter(key => !key.startsWith('@')) : [];
+  });
+
+  formatValue(value: unknown): string {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+  }
 }

@@ -1,4 +1,7 @@
-<div class="bg-light"> 
+<div class="bg-light">
     <h2 class="header">Campo de cada entidad</h2>
-    <app-entities-render-entity [entityItems]="entityItems"></app-entities-render-entity>
+    <app-entities-render-entity
+        [entityName]="selectedEntity()"
+        [items]="items()"
+    ></app-entities-render-entity>
 </div>

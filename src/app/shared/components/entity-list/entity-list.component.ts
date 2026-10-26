@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../../entities/services/backend.service';
+import { EntityStateService, EntityRow } from '../../../entities/services/entity-state.service';
 
 @Component({
   selector: 'app-shared-entity-list',
@@ -9,11 +10,10 @@ import { ApiService } from '../../../entities/services/backend.service';
 })
 export class EntityListComponent implements OnInit {
   private apiService = inject(ApiService);
+  private entityState = inject(EntityStateService);
 
   public entities = this.apiService.entities;
-  public selectedEntity = signal<string | null>(null);
-  private _items = signal<unknown[]>([]);
-  public items = this._items.asReadonly();
+  public selectedEntity = this.entityState.selectedEntity;
 
   ngOnInit(): void {
     this.apiService.getEntities().subscribe({
@@ -22,10 +22,8 @@ export class EntityListComponent implements OnInit {
   }
 
   getEntityData([name, endpoint]: [string, string]): void {
-    this.selectedEntity.set(name);
-    this.apiService.getEntityProperties(endpoint).subscribe({
-      next: items => {this._items.set(items); console.table(this._items())},
-      //TODO tengo que conectar el objeto con los campos al homepage para renderizar la vista
+    this.apiService.getEntityProperties<EntityRow>(endpoint).subscribe({
+      next: items => this.entityState.setSelection(name, items),
       error: error => console.error('Error al obtener las propiedades:', error),
     });
   }
