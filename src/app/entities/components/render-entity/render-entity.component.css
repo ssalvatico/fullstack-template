@@ -1,3 +1,30 @@
 :host {
-  display: block;
+    display: block;
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.entity-content {
+    width: 100%;
+    min-width: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.entity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.entity-header h4 {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.table-responsive {
+    width: 100%;
 }

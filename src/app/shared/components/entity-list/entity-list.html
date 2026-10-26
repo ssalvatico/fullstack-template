@@ -1,13 +1,14 @@
 <div class="bg-dark border-right p-3 min-vh-100" id="sidebar">
-
     <h3 class="entities-title">Lista de entidades</h3>
 
     <div class="list-group list-reset">
         @for (entityElem of entities(); track entityElem[0]) {
             <button
                 class="list-group-item list-group-item-action"
+                [class.item-active]="selectedEntity() === entityElem[0]"
                 (click)="getEntityData(entityElem)"
-            >{{ entityElem[0].charAt(0).toUpperCase() + entityElem[0].slice(1) }}
+            >
+                {{ entityElem[0].charAt(0).toUpperCase() + entityElem[0].slice(1) }}
             </button>
         }
     </div>

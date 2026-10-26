@@ -1,23 +1,51 @@
-@if (items().length) {
-    <h4>{{ entityName() }}</h4>
-    <table class="table table-sm table-striped">
-    <thead>
-        <tr>
-        @for (key of columns(); track key) {
-            <th>{{ key }}</th>
-        }
-        </tr>
-    </thead>
-    <tbody>
-        @for (row of items(); track $index) {
-        <tr>
-            @for (key of columns(); track key) {
-            <td>{{ formatValue(row[key]) }}</td>
-            }
-        </tr>
-        }
-    </tbody>
-    </table>
-} @else {
-    <p>Seleccioná una entidad de la lista.</p>
-}
+<div class="entity-content">
+    @if (items().length === 0) {
+        <p>Seleccioná una entidad de la lista.</p>
+    } @else {
+        <div class="entity-header">
+            <h4>{{ entityName() }}</h4>
+            <button
+                class="btn btn-success"
+                (click)="agregarEntidad()"
+            >Crear
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        @for (key of columns(); track key) {
+                            <th>{{ key }}</th>
+                        }
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (row of items(); track $index) {
+                        <tr>
+                            @for (key of columns(); track key) {
+                                <td class="align-middle">
+                                    {{ formatValue(row[key]) }}
+                                </td>
+                            }
+
+                            <td class="align-middle">
+                                <div class="d-flex gap-2 justify-content-center flex-nowrap">
+                                    <button
+                                        class="btn btn-primary btn-sm"
+                                        (click)="editarEntidad(row)"
+                                    >Editar</button>
+                                    <button
+                                        class="btn btn-danger btn-sm"
+                                        (click)="eliminarEntidad(row)"
+                                    >Eliminar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

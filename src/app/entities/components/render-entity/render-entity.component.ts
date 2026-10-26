@@ -21,4 +21,8 @@ export class RenderEntityComponent {
     if (typeof value === 'object') return JSON.stringify(value);
     return String(value);
   }
+
+  agregarEntidad(): void {console.log('add');}
+  editarEntidad (row:any): void {console.log(row);}
+  eliminarEntidad (row:any): void {console.log(row);}
 }
