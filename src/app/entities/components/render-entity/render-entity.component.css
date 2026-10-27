@@ -5,6 +5,30 @@
     max-width: 100%;
 }
 
+.crear{
+    background-color: #6366f1;
+    color:aliceblue;
+}
+.crear:hover{
+    background-color: #4244a3;
+}
+
+.editar{
+    background-color: #e7b93a;
+    color:#fff;
+}
+.editar:hover{
+    background-color: #c79202;
+}
+
+.eliminar{
+    background-color: #e02e2e;
+    color:#fff;
+}
+.eliminar:hover{
+    background-color: #a82222;
+}
+
 .entity-content {
     width: 100%;
     min-width: 0;

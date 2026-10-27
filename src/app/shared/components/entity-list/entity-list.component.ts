@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { forkJoin, of, switchMap, map } from 'rxjs';
 import { ApiService } from '../../../entities/services/backend.service';
 import { EntityStateService, EntityRow } from '../../../entities/services/entity-state.service';
+import { RelationOption } from '../../../entities/interfaces/hydra-docs';
 
 @Component({
   selector: 'app-shared-entity-list',
@@ -22,9 +24,45 @@ export class EntityListComponent implements OnInit {
   }
 
   getEntityData([name, endpoint]: [string, string]): void {
-    this.apiService.getEntityProperties<EntityRow>(endpoint).subscribe({
-      next: items => this.entityState.setSelection(name, items),
-      error: error => console.error('Error al obtener las propiedades:', error),
+    forkJoin({
+      items: this.apiService.getEntityProperties<EntityRow>(endpoint),
+      fields: this.apiService.getFormFields(endpoint),
+    }).pipe(
+      switchMap(({ items, fields }) => {
+        const relationFields = fields.filter(f => f.type === 'relation' && f.target);
+        const targets = [...new Set(relationFields.map(f => f.target!))];
+
+        const optionsByTarget$ = targets.length
+          ? forkJoin(
+              Object.fromEntries(targets.map(t => [t, this.apiService.getRelationOptions(t)]))
+            )
+          : of({} as Record<string, RelationOption[]>);
+
+        return optionsByTarget$.pipe(
+          map(optionsByTarget => {
+            const relationLabels: Record<string, string> = {};
+            Object.values(optionsByTarget).forEach(opts =>
+              opts.forEach(o => (relationLabels[o.iri] = o.label))
+            );
+
+            const relationOptions: Record<string, RelationOption[]> = {};
+            relationFields.forEach(f => {
+              relationOptions[f.name] = optionsByTarget[f.target!] ?? [];
+            });
+
+            const enrichedFields = fields.map(f => ({
+              ...f,
+              multiple: f.type === 'relation' && items.some(it => Array.isArray(it[f.name])),
+            }));
+
+            return { items, fields: enrichedFields, relationLabels, relationOptions };
+          })
+        );
+      })
+    ).subscribe({
+      next: ({ items, fields, relationLabels, relationOptions }) =>
+        this.entityState.setSelection(name, endpoint, items, fields, relationLabels, relationOptions),
+      error: error => console.error('Error al cargar la entidad:', error),
     });
   }
 }

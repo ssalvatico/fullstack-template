@@ -5,7 +5,7 @@ export interface ApiRoot {
     [key: string]:   unknown;
 }
 
-export interface APIEntity<T = Record<string, unknown>> {
+export interface ApiEntity<T = Record<string, unknown>> {
   "@context": string;
   "@id": string;
   "@type": string;

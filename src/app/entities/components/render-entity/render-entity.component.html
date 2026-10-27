@@ -5,8 +5,8 @@
         <div class="entity-header">
             <h4>{{ entityName() }}</h4>
             <button
-                class="btn btn-success"
-                (click)="agregarEntidad()"
+                class="btn crear"
+                (click)="createEntity()"
             >Crear
             </button>
         </div>
@@ -25,25 +25,20 @@
                     @for (row of items(); track $index) {
                         <tr>
                             @for (key of columns(); track key) {
-                                @if (key === 'items') {
-
                                     <td class="align-middle">
                                         {{ formatValue(row[key]) }}
                                     </td>
-                                } @else {
-                                    hola
-                                }
                             }
 
                             <td class="align-middle">
                                 <div class="d-flex gap-2 justify-content-center flex-nowrap">
                                     <button
-                                        class="btn btn-primary btn-sm"
-                                        (click)="editarEntidad(row)"
+                                        class="btn editar btn-sm"
+                                        (click)="updateEntity(row)"
                                     >Editar</button>
                                     <button
-                                        class="btn btn-danger btn-sm"
-                                        (click)="eliminarEntidad(row)"
+                                        class="btn eliminar btn-sm"
+                                        (click)="deleteEntity(row)"
                                     >Eliminar</button>
                                 </div>
                             </td>

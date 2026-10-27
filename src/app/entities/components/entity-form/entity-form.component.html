@@ -1,0 +1,97 @@
+<form class="form-container px-4" (submit)="$event.preventDefault(); submit()">
+  @if (errors().size > 0) {
+    <div class="form-error-banner" role="alert">
+      <span class="error-icon" aria-hidden="true">!</span>
+      <div>
+        <strong>Se encontraron errores</strong>
+        <p>Completá los campos obligatorios.</p>
+      </div>
+    </div>
+  }
+
+  <div class="form-body">
+    @for (field of fields(); track field.name) {
+      <div 
+        class="form-field" 
+        [class.has-error]="errors().has(field.name)"
+      >
+        @if (field.type === 'checkbox') {
+          <label class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [class.is-invalid]="errors().has(field.name)"
+              [checked]="!!values()[field.name]"
+              (change)="onInput(field, $event)"
+            />
+            <span class="form-check-label">
+              {{ field.name }}@if (field.required) { <span class="required">*</span> }
+            </span>
+          </label>
+        } @else {
+          <label class="form-label">
+            {{ field.name }}@if (field.required) {
+              <span class="required">*</span>
+            }
+          </label>
+
+          @if (field.type === 'relation' && field.multiple) {
+            <select
+              multiple
+              class="form-select form-control"
+              [class.is-invalid]="errors().has(field.name)"
+              (change)="onMultiSelect(field, $event)"
+            >
+              @for (opt of relationOptions()[field.name] ?? []; track opt.iri) {
+                <option
+                  [value]="opt.iri"
+                  [selected]="isSelected(field, opt.iri)"
+                >
+                  {{ opt.label }}
+                </option>
+              }
+            </select>
+          } @else if (field.type === 'relation') {
+            <select
+              class="form-select form-control"
+              [class.is-invalid]="errors().has(field.name)"
+              [value]="values()[field.name] ?? ''"
+              (change)="onInput(field, $event)"
+            >
+              <option value="">-- Seleccionar --</option>
+              @for (opt of relationOptions()[field.name] ?? []; track opt.iri) {
+                <option [value]="opt.iri">{{ opt.label }}</option>
+              }
+            </select>
+          } @else {
+            <input
+              class="form-control"
+              [class.is-invalid]="errors().has(field.name)"
+              [type]="field.type"
+              [value]="values()[field.name] ?? ''"
+              (input)="onInput(field, $event)"
+            />
+          }
+        }
+
+        @if (errors().has(field.name)) {
+          <div class="field-error">Este campo es obligatorio.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="form-footer">
+    <span class="required-hint">* Campos obligatorios</span>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" (click)="cancel.emit()">
+        Cancelar
+      </button>
+
+      <button type="submit" class="btn btn-save">
+        Guardar
+      </button>
+    </div>
+  </div>
+</form>
