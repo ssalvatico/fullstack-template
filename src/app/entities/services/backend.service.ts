@@ -6,13 +6,13 @@ import { HydraDocs, FormField, RelationOption, toFieldType } from '../interfaces
 
 import { ApiRoot, ApiEntity } from '../interfaces/api-root';
 import { env } from '../../environment/env';
+import { HIDDEN_FIELDS, resolveDisplayValue } from '../config/field-mapper.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   private _entities = signal<[string, string][]>([]);
-  private readonly HIDDEN_FIELDS = ['createdAt', 'updatedAt'];
   public entities = this._entities.asReadonly();
 
   constructor(private http: HttpClient) {}
@@ -61,7 +61,7 @@ export class ApiService {
               type: toFieldType(range),
               target: range?.startsWith('#') ? range.slice(1) : undefined,
             };
-          }).filter(f => !this.HIDDEN_FIELDS.includes(f.name));
+          }).filter(f => !HIDDEN_FIELDS.includes(f.name));
         })
       ))
     );
@@ -90,15 +90,17 @@ export class ApiService {
     return this.getEntityProperties<Record<string, unknown>>(endpoint).pipe(
       map(items => items.map(item => ({
         iri: item['@id'] as string,
-        label: this.labelFor(item),
+        label: this.labelFor(item, target),
       })))
     );
   }
 
-  private labelFor(item: Record<string, unknown>): string {
-    const name = item['name'];
-    if (typeof name === 'string' && name) return name;
-    return (item['@id'] as string)?.split('/').pop() ?? '';
+  private labelFor(item: Record<string, unknown>, className?: string): string {
+    return (
+      resolveDisplayValue(item, className) ??
+      (item['@id'] as string)?.split('/').pop() ??
+      ''
+    );
   }
 
   endpointForClass(className: string): string | undefined {
