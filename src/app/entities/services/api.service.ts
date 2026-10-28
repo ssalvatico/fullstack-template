@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable, map, tap, switchMap, of } from 'rxjs';
+import { Observable, map, tap, switchMap, of, shareReplay, share } from 'rxjs';
 import { HydraDocs, FormField, RelationOption, toFieldType } from '../interfaces/hydra-docs';
 
 import { ApiRoot, ApiEntity } from '../interfaces/api-root';
@@ -25,8 +25,53 @@ export class ApiService {
     );
   }
 
-  getEntityProperties<T = unknown>(entityEndpoint: string): Observable<T[]> {
-    return this.http.get<ApiEntity<T>>(`${env.BASE_URL}${entityEndpoint}`).pipe(
+
+  private cacheEntities = new Map<string, Observable<ApiEntity<unknown>>>();
+  private cacheDocs = new Map<string, Observable<HydraDocs>>();
+
+  getDocs(): Observable<HydraDocs> {
+    const cachedDocs = this.cacheDocs.get('docs');
+    if (cachedDocs) {
+      return cachedDocs;
+    }
+    const request$ = this.http.get<HydraDocs>(
+      `${env.BASE_URL}${env.API_ENDPOINT}/docs.jsonld`
+    ).pipe(shareReplay(1));
+    this.cacheDocs.set('docs', request$);
+
+    return request$;
+  }
+
+
+  private getRequest<T = unknown>(
+    entityEndpoint: string
+  ): Observable<ApiEntity<T>> {
+    if (!this.cacheEntities.has(entityEndpoint)) {
+      const request$ = this.http
+        .get<ApiEntity<T>>(`${env.BASE_URL}${entityEndpoint}`)
+        .pipe(
+          shareReplay(1)
+        );
+
+      this.cacheEntities.set(
+        entityEndpoint,
+        request$ as Observable<ApiEntity<unknown>>
+      );
+    }
+
+    return this.cacheEntities.get(entityEndpoint)! as Observable<ApiEntity<T>>;
+  }
+
+  getCollection<T = unknown>(
+    entityEndpoint: string
+  ): Observable<ApiEntity<T>> {
+    return this.getRequest<T>(entityEndpoint);
+  }
+
+  getEntityProperties<T = unknown>(
+    entityEndpoint: string
+  ): Observable<T[]> {
+    return this.getRequest<T>(entityEndpoint).pipe(
       map(response => response.member)
     );
   }
@@ -37,14 +82,6 @@ export class ApiService {
     return Object.fromEntries(
       Object.entries(response).filter(([key]) => !key.startsWith('@'))
     ) as Omit<T, '@context' | '@id' | '@type'>;
-  }
-
-  getCollection<T = unknown>(endpoint: string): Observable<ApiEntity<T>> {
-    return this.http.get<ApiEntity<T>>(`${env.BASE_URL}${endpoint}`);
-  }
-
-  getDocs(): Observable<HydraDocs> {
-    return this.http.get<HydraDocs>(`${env.BASE_URL}/api/docs.jsonld`);
   }
 
   getFormFields(endpoint: string): Observable<FormField[]> {

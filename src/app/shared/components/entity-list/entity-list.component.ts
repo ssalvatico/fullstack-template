@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { forkJoin, of, switchMap, map } from 'rxjs';
-import { ApiService } from '../../../entities/services/backend.service';
+import { ApiService } from '../../../entities/services/api.service';
 import { EntityStateService, EntityRow } from '../../../entities/services/entity-state.service';
 import { RelationOption } from '../../../entities/interfaces/hydra-docs';
 

@@ -1,6 +1,6 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { EntityRow, EntityStateService } from '../../services/entity-state.service';
-import { ApiService } from '../../services/backend.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-home-page',
