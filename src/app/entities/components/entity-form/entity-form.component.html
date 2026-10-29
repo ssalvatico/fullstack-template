@@ -68,6 +68,7 @@
               class="form-control"
               [class.is-invalid]="errors().has(field.name)"
               [type]="field.type"
+              step="any"
               [value]="values()[field.name] ?? ''"
               (input)="onInput(field, $event)"
             />

@@ -6,13 +6,15 @@ import { HydraDocs, FormField, RelationOption, toFieldType } from '../interfaces
 
 import { ApiRoot, ApiEntity } from '../interfaces/api-root';
 import { env } from '../../environment/env';
-import { HIDDEN_FIELDS, resolveDisplayValue } from '../config/field-mapper.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  private cacheEntities = new Map<string, Observable<ApiEntity<unknown>>>();
+  private cacheDocs = new Map<string, Observable<HydraDocs>>();
   private _entities = signal<[string, string][]>([]);
+  private HIDDEN_FIELDS = ['createdAt','updatedAt'];
   public entities = this._entities.asReadonly();
 
   constructor(private http: HttpClient) {}
@@ -25,10 +27,6 @@ export class ApiService {
     );
   }
 
-
-  private cacheEntities = new Map<string, Observable<ApiEntity<unknown>>>();
-  private cacheDocs = new Map<string, Observable<HydraDocs>>();
-
   getDocs(): Observable<HydraDocs> {
     const cachedDocs = this.cacheDocs.get('docs');
     if (cachedDocs) {
@@ -37,7 +35,12 @@ export class ApiService {
     const request$ = this.http.get<HydraDocs>(
       `${env.BASE_URL}${env.API_ENDPOINT}/docs.jsonld`
     ).pipe(shareReplay(1));
+    
     this.cacheDocs.set('docs', request$);
+
+    setTimeout(() => {
+      this.cacheEntities.delete('docs');
+    }, 5 * 60 * 1000);
 
     return request$;
   }
@@ -52,13 +55,15 @@ export class ApiService {
         .pipe(
           shareReplay(1)
         );
-
       this.cacheEntities.set(
         entityEndpoint,
         request$ as Observable<ApiEntity<unknown>>
       );
     }
-
+    setTimeout(() => {
+      this.cacheEntities.delete(entityEndpoint);
+    }, 5 * 60 * 1000);
+    
     return this.cacheEntities.get(entityEndpoint)! as Observable<ApiEntity<T>>;
   }
 
@@ -98,7 +103,7 @@ export class ApiService {
               type: toFieldType(range),
               target: range?.startsWith('#') ? range.slice(1) : undefined,
             };
-          }).filter(f => !HIDDEN_FIELDS.includes(f.name));
+          }).filter(f => !this.HIDDEN_FIELDS.includes(f.name));
         })
       ))
     );
@@ -127,17 +132,13 @@ export class ApiService {
     return this.getEntityProperties<Record<string, unknown>>(endpoint).pipe(
       map(items => items.map(item => ({
         iri: item['@id'] as string,
-        label: this.labelFor(item, target),
+        label: this.labelFor(item),
       })))
     );
   }
-
-  private labelFor(item: Record<string, unknown>, className?: string): string {
-    return (
-      resolveDisplayValue(item, className) ??
-      (item['@id'] as string)?.split('/').pop() ??
-      ''
-    );
+  
+  private labelFor(item: Record<string, unknown>): string {
+    return item['name'] as string;
   }
 
   endpointForClass(className: string): string | undefined {
