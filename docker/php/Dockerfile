@@ -2,11 +2,12 @@ FROM php:8.3-fpm
 
 ARG UID=1000
 ARG GID=1000
+
 ARG http_proxy
 ARG https_proxy
 
-ENV http_proxy="http://10.100.254.219:3128"
-ENV https_proxy="http://10.100.254.219:3128"
+ENV http_proxy=${http_proxy}
+ENV https_proxy=${https_proxy}
 
 RUN apt-get update && apt-get install -y git unzip libicu-dev libzip-dev \
     && docker-php-ext-install intl pdo_mysql zip opcache \
