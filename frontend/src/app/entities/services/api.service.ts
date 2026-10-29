@@ -19,6 +19,10 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  private invalidateCache(): void {
+    this.cacheEntities.clear();
+  }
+
   getEntities(): Observable<[string, string][]> {
     return this.http.get<ApiRoot>(`${env.BASE_URL}${env.API_ENDPOINT}`).pipe(
       map(response => this.removeJsonLdKeywords(response)),
@@ -46,25 +50,20 @@ export class ApiService {
   }
 
 
-  private getRequest<T = unknown>(
-    entityEndpoint: string
-  ): Observable<ApiEntity<T>> {
-    if (!this.cacheEntities.has(entityEndpoint)) {
-      const request$ = this.http
+  private getRequest<T = unknown>(entityEndpoint: string): Observable<ApiEntity<T>> {
+    let request$ = this.cacheEntities.get(entityEndpoint) as Observable<ApiEntity<T>> | undefined;
+    if (!request$) {
+      request$ = this.http
         .get<ApiEntity<T>>(`${env.BASE_URL}${entityEndpoint}`)
-        .pipe(
-          shareReplay(1)
-        );
-      this.cacheEntities.set(
-        entityEndpoint,
-        request$ as Observable<ApiEntity<unknown>>
-      );
+        .pipe(shareReplay(1));
+      this.cacheEntities.set(entityEndpoint, request$ as Observable<ApiEntity<unknown>>);
+      setTimeout(() => {
+        if (this.cacheEntities.get(entityEndpoint) === request$) {
+          this.cacheEntities.delete(entityEndpoint);
+        }
+      }, 5 * 60 * 1000);
     }
-    setTimeout(() => {
-      this.cacheEntities.delete(entityEndpoint);
-    }, 5 * 60 * 1000);
-    
-    return this.cacheEntities.get(entityEndpoint)! as Observable<ApiEntity<T>>;
+    return request$;
   }
 
   getCollection<T = unknown>(
@@ -112,17 +111,20 @@ export class ApiService {
   createEntity<T>(endpoint: string, body: Partial<T>): Observable<T> {
     return this.http.post<T>(`${env.BASE_URL}${endpoint}`, body, {
       headers: { 'Content-Type': 'application/ld+json', Accept: 'application/ld+json' },
-    });
+    })
+    .pipe(tap(() => this.invalidateCache()));
   }
 
   updateEntity<T>(iri: string, body: Partial<T>): Observable<T> {
     return this.http.patch<T>(`${env.BASE_URL}${iri}`, body, {
       headers: { 'Content-Type': 'application/merge-patch+json', Accept: 'application/ld+json' },
-    });
+    })
+    .pipe(tap(() => this.invalidateCache()));
   }
 
   deleteEntity(iri: string): Observable<void> {
-    return this.http.delete<void>(`${env.BASE_URL}${iri}`);
+    return this.http.delete<void>(`${env.BASE_URL}${iri}`)
+    .pipe(tap(() => this.invalidateCache()));
   }
   
   getRelationOptions(target: string): Observable<RelationOption[]> {
