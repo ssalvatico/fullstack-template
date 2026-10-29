@@ -19,8 +19,7 @@ class TemplateEntity extends BaseEntity
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: 'El estado es obligatorio.')]
-    private ?bool $active = null;
+    private bool $active = false;
 
     /**
      * @var Collection<int, TemplateItem>
@@ -44,7 +43,7 @@ class TemplateEntity extends BaseEntity
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function isActive(): bool
     {
         return $this->active;
     }

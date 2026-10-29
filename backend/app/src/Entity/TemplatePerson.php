@@ -28,8 +28,7 @@ class TemplatePerson extends BaseEntity
     private int $dni;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: 'El estado vital es obligatorio.')]
-    private bool $alive;
+    private bool $alive = false;
 
     public function getName(): string
     {
