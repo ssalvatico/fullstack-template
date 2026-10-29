@@ -5,12 +5,15 @@ namespace App\Entity;
 use App\Repository\TemplateItemRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: TemplateItemRepository::class)]
 #[ApiResource]
 class TemplateItem extends BaseEntity
 {
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]

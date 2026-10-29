@@ -7,15 +7,19 @@ use App\Repository\TemplateEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: TemplateEntityRepository::class)]
 #[ApiResource]
 class TemplateEntity extends BaseEntity
 {
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'El estado es obligatorio.')]
     private ?bool $active = null;
 
     /**
