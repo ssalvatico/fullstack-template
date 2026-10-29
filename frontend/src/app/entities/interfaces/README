@@ -1,0 +1,12 @@
+Las entidades ya NO se tipan a mano (se sacaron los TemplateEntity/TemplateItem/TemplateProduct,
+que asumían un campo `name` fijo para todas las entidades).
+
+El front descubre los campos de cada entidad en runtime contra /api/docs.jsonld
+(ver backend.service.ts -> getFormFields) y los maneja como Record<string, unknown>
+(ver EntityRow en entity-state.service.ts). Así, agregar/renombrar un campo en el
+backend no requiere tocar nada del front.
+
+La única decisión que el front SÍ toma sobre nombres de campo puntuales (qué campo
+usar como etiqueta en los <select> de relaciones, y qué campos ocultar siempre) está
+centralizada en entities/config/field-mapper.config.ts. Si el backend cambia algo ahí,
+ese es el único archivo a modificar.

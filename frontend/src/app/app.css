@@ -1,0 +1,16 @@
+.main-layout {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+}
+
+.sidebar-container {
+    flex: 0 0 250px;
+    min-width: 200px;
+}
+
+.content-container {
+    flex: 1;
+    min-width: 0;
+}

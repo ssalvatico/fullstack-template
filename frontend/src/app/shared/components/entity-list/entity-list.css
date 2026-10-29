@@ -1,0 +1,21 @@
+#sidebar {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.item-active {
+    background-color: #6366f1 !important;
+    color: #f8fafc !important;
+    border-color: #6366f1;
+}
+
+.entities-title {
+    color: #f8fafc;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #6366f1;
+}

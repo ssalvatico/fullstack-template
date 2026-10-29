@@ -1,0 +1,22 @@
+<div class="bg-light" id="homepage">
+  <h2 class="header"><span>Campo de cada entidad</span></h2>
+
+  @if (!formOpen()) {
+    <app-entities-render-entity
+      [entityName]="selectedEntity()"
+      [items]="items()"
+      [relationLabels]="relationLabels()"
+      (create)="openCreate()"
+      (edit)="openEdit($event)"
+      (remove)="onDelete($event)"
+    ></app-entities-render-entity>
+  } @else {
+    <app-entity-form
+      [fields]="fields()"
+      [initial]="editingRow()"
+      [relationOptions]="relationOptions()"
+      (save)="onSave($event)"
+      (cancel)="closeForm()"
+    ></app-entity-form>
+  }
+</div>
