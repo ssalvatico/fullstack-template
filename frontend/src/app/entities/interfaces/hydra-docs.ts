@@ -3,7 +3,11 @@ export interface HydraProperty {
   required?: boolean;
   readable?: boolean;
   writable?: boolean;
-  property?: { label?: string; range?: string };
+  property?: {
+    label?: string;
+    range?: string;
+    'owl:maxCardinality'?: number;
+  };
 }
 
 export interface HydraClass {

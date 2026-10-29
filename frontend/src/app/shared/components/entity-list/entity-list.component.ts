@@ -50,12 +50,7 @@ export class EntityListComponent implements OnInit {
               relationOptions[f.name] = optionsByTarget[f.target!] ?? [];
             });
 
-            const enrichedFields = fields.map(f => ({
-              ...f,
-              multiple: f.type === 'relation' && items.some(it => Array.isArray(it[f.name])),
-            }));
-
-            return { items, fields: enrichedFields, relationLabels, relationOptions };
+            return { items, fields, relationLabels, relationOptions };
           })
         );
       })

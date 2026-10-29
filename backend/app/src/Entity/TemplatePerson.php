@@ -10,13 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TemplatePersonRepository::class)]
 #[ApiResource]
-class TemplatePerson
+class TemplatePerson extends BaseEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private int $id;
-
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
     #[Assert\Length(max: 100, maxMessage: 'El nombre no puede superar los 100 caracteres.')]
@@ -35,11 +30,6 @@ class TemplatePerson
     #[ORM\Column]
     #[Assert\NotNull(message: 'El estado vital es obligatorio.')]
     private bool $alive;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     public function getName(): string
     {

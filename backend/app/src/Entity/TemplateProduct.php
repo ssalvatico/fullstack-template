@@ -9,13 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TemplateProductRepository::class)]
 #[ApiResource]
-class TemplateProduct
+class TemplateProduct extends BaseEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
     private ?string $name = null;
@@ -28,18 +23,6 @@ class TemplateProduct
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'El SKU es obligatorio.')]
     private ?string $sku = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     public function getName(): ?string
     {

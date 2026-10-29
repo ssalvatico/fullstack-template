@@ -43,12 +43,11 @@ export class ApiService {
     this.cacheDocs.set('docs', request$);
 
     setTimeout(() => {
-      this.cacheEntities.delete('docs');
+      this.cacheDocs.delete('docs');
     }, 5 * 60 * 1000);
 
     return request$;
   }
-
 
   private getRequest<T = unknown>(entityEndpoint: string): Observable<ApiEntity<T>> {
     let request$ = this.cacheEntities.get(entityEndpoint) as Observable<ApiEntity<T>> | undefined;
@@ -96,11 +95,14 @@ export class ApiService {
           .filter(p => p.writable !== false)
           .map(p => {
             const range = p.property?.range;
+            const type = toFieldType(range);
+            const isRelation = type === 'relation';
             return {
               name: p.title ?? p.property?.label ?? '',
               required: p.required === true,
-              type: toFieldType(range),
+              type,
               target: range?.startsWith('#') ? range.slice(1) : undefined,
+              multiple: isRelation && p.property?.['owl:maxCardinality'] !== 1,
             };
           }).filter(f => !this.HIDDEN_FIELDS.includes(f.name));
         })
