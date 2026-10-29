@@ -1,10 +1,10 @@
-<div class="bg-dark border-right p-3 min-vh-100" id="sidebar">
-    <h3 class="entities-title">Lista de entidades</h3>
+<nav class="sidebar">
+    <h3 class="sidebar-title">Entidades</h3>
 
-    <div class="list-group list-reset">
+    <div class="nav-list">
         @for (entityElem of entities(); track entityElem[0]) {
             <button
-                class="list-group-item list-group-item-action"
+                class="nav-btn"
                 [class.item-active]="selectedEntity() === entityElem[0]"
                 [class.disabled]="selectedEntity() === entityElem[0]"
                 (click)="getEntityData(entityElem)"
@@ -13,4 +13,4 @@
             </button>
         }
     </div>
-</div>
+</nav>

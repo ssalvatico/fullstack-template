@@ -31,7 +31,7 @@ build_frontend:
 ### Inicio y detención
 run:
 	docker compose up -d
-	@echo "pypMyAdmin 	http://localhost:8081"
+	@echo "phpMyAdmin 	http://localhost:8081"
 	@echo "api 		http://localhost:8080/api"
 	@echo "front 		http://localhost:4200"
 
