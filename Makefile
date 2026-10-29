@@ -13,19 +13,10 @@ FRONTEND_DIR="./frontend/"
 
 
 ### Construcción de imágenes
-build:
-	cd $(BACKEND_DIR) && composer install
-	cd $(FRONTEND_DIR) && npm install
-	$(MAKE) build_backend
-	$(MAKE) build_frontend
-	@echo "Imágenes construidas. Ejecutá 'make run' para iniciar el proyecto."
-
-
-build_backend:
-	docker compose build php nginx
-
-build_frontend:
-	docker compose build frontend
+build: build_backend build_frontend
+	docker compose run --rm --no-deps php composer install
+	docker compose run --rm --no-deps frontend npm ci
+	@echo "Imágenes y dependencias listas. Ejecutá 'make run' para iniciar el proyecto."
 
 
 ### Inicio y detención
@@ -64,12 +55,8 @@ logs-fe: ## Sigue los logs del frontend
 logs-be: ## Sigue los logs del backend
 	docker compose logs -f php
 
-
-### Descarga de imágenes auxiliares
-pull_images: pull_composer pull_node
-
-pull_composer:
-	docker pull composer:2
-
-pull_node:
-	docker pull node:24.15.0-alpine
+### Elimina contenedores, volúmenes, imágenes y dependencias descargadas
+clean:
+	docker compose down -v --rmi all --remove-orphans
+	docker rmi composer:2 node:24.15.0-alpine 2>/dev/null || true
+	rm -rf backend/app/vendor frontend/node_modules frontend/dist
