@@ -2,15 +2,27 @@ PROJECT_NAME:=api_template
 UID:=$(shell id -u)
 GID:=$(shell id -g)
 
-.PHONY: build run stop restart logs ssh-be ssh-db build_backend build_frontend pull_composer pull_node
+BACKEND_DIR="./backend/app/"
+FRONTEND_DIR="./frontend/"
+
+.PHONY: build run stop restart logs \
+        ssh-be ssh-db ssh-fe \
+        build_backend build_frontend \
+        logs-fe logs-be \
+        pull_images pull_composer pull_node
 
 
 ### Construcción de imágenes
-build: build_backend build_frontend
+build:
+	cd $(BACKEND_DIR) && composer install
+	cd $(FRONTEND_DIR) && npm install
+	$(MAKE) build_backend
+	$(MAKE) build_frontend
 	@echo "Imágenes construidas. Ejecutá 'make run' para iniciar el proyecto."
 
+
 build_backend:
-	docker compose build php
+	docker compose build php nginx
 
 build_frontend:
 	docker compose build frontend
@@ -33,7 +45,7 @@ restart:
 
 ### Consolas
 ssh-be: ## Entra al contenedor PHP
-	docker compose exec --user (UID):(GID) php bash
+	docker compose exec --user $(UID):$(GID) php bash
 
 ssh-db: ## Entra a la consola de MySQL
 	docker compose exec db mysql -uroot -proot $(PROJECT_NAME) -A
@@ -54,6 +66,8 @@ logs-be: ## Sigue los logs del backend
 
 
 ### Descarga de imágenes auxiliares
+pull_images: pull_composer pull_node
+
 pull_composer:
 	docker pull composer:2
 

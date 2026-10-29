@@ -1,0 +1,22 @@
+## Instalar las dependencias y construir las imágenes:
+`make build`
+
+## Iniciar los contenedores:
+`make run`
+
+## Acceder a los servicios:
+Frontend: http://localhost:4200
+Backend: http://localhost:8080/api
+phpMyAdmin: http://localhost:8081
+
+## Comandos útiles
+make stop: detener los contenedores.
+make restart: reiniciar los contenedores.
+make logs: ver los logs de todos los servicios.
+make logs-be: ver los logs del backend.
+make logs-fe: ver los logs del frontend.
+make ssh-be: acceder al contenedor PHP.
+make ssh-fe: acceder al contenedor del frontend.
+make ssh-db: acceder a la consola de MySQL.
+
+Requisitos: Docker, Docker Compose, Make, PHP, Composer, Node.js y npm.
