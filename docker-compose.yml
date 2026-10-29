@@ -23,6 +23,13 @@ services:
 
   db:
     image: mysql:8.4
+    build:
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
+        NO_PROXY: ${NO_PROXY}
     environment:
       MYSQL_DATABASE: api_template
       MYSQL_USER: admin
