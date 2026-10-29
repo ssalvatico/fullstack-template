@@ -29,14 +29,41 @@ export class RenderEntityComponent {
   }
 
   private resolveOne(value: unknown): string {
-    if (typeof value === 'string') {
-      const label = this.relationLabels()[value];
-      if (label) return label;
-      if (value.startsWith('/api/')) return value.split('/').pop() ?? value;
-    }
     if (value === null || value === undefined) return '';
+    if (typeof value === 'string') {
+      return this.formatToDateTime(value);
+    }
     if (typeof value === 'object') return JSON.stringify(value);
     return String(value);
+  }
+
+  private formatToDateTime(value:string){
+  // Detectar fechas ISO 8601 provenientes del backend
+    const dateRegex =
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+
+    if (dateRegex.test(value)) {
+      const date = new Date(value);
+
+      if (!isNaN(date.getTime())) {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+      }
+    }
+
+    const label = this.relationLabels()[value];
+    if (label) return label;
+
+    if (value.startsWith('/api/')) {
+      return value.split('/').pop() ?? value;
+    }
+    return value;
   }
 
   createEntity(): void { this.create.emit(); }
