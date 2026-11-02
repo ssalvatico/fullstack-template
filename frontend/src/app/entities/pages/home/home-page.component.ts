@@ -58,7 +58,7 @@ export class HomePageComponent {
         this.closeForm();
         this.reload();
       },
-      error: err => console.error('Error al guardar:', err),
+      error: err => console.error(err.error.detail),
     });
   }
 

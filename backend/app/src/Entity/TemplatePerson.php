@@ -19,7 +19,8 @@ class TemplatePerson extends BaseEntity
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotNull(message: 'La edad es obligatoria.')]
-    #[Assert\PositiveOrZero(message: 'La edad debe ser mayor o igual a cero.')]
+    #[Assert\GreaterThan(0, message: "La edad debe ser un número entre 1 y 120")]
+    #[Assert\LessThanOrEqual(120, message: "La edad debe ser un número entre 1 y 120")]
     private int $age;
 
     #[ORM\Column(type: Types::INTEGER)]
