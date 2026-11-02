@@ -21,9 +21,13 @@ build: pull_images
 ### Inicio y detención
 run:
 	docker compose up -d
+	@echo ""
 	@echo "phpMyAdmin 	http://localhost:8081"
 	@echo "api 		http://localhost:8080/api"
 	@echo "front 		http://localhost:4200"
+	@echo ""
+	@echo "Ejecutá 'make ssh-be' y despues"
+	@echo "'bin/console doc:mi:mi' para traer la base de datos"
 
 stop:
 	docker compose down

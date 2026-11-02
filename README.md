@@ -1,6 +1,10 @@
 ## Instalar las dependencias y construir las imágenes:
     make build
 
+## Para traer la base de datos:
+    make ssh-be
+    bin/console doc:mi:mi
+
 ## Iniciar los contenedores:
     make run
 
