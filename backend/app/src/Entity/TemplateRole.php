@@ -24,11 +24,11 @@ class TemplateRole
      * @var Collection<int, TemplatePerson>
      */
     #[ORM\ManyToMany(targetEntity: TemplatePerson::class, inversedBy: 'role')]
-    private Collection $user;
+    private Collection $person;
 
     public function __construct()
     {
-        $this->user = new ArrayCollection();
+        $this->person = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -36,12 +36,12 @@ class TemplateRole
         return $this->id;
     }
 
-    public function getRoleName(): ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setRoleName(string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -51,23 +51,23 @@ class TemplateRole
     /**
      * @return Collection<int, TemplatePerson>
      */
-    public function getUser(): Collection
+    public function getPerson(): Collection
     {
-        return $this->user;
+        return $this->person;
     }
 
-    public function addUser(TemplatePerson $user): static
+    public function addPerson(TemplatePerson $person): static
     {
-        if (!$this->user->contains($user)) {
-            $this->user->add($user);
+        if (!$this->person->contains($person)) {
+            $this->person->add($person);
         }
 
         return $this;
     }
 
-    public function removeUser(TemplatePerson $user): static
+    public function removePerson(TemplatePerson $person): static
     {
-        $this->user->removeElement($user);
+        $this->person->removeElement($person);
 
         return $this;
     }

@@ -49,7 +49,7 @@ class TemplatePerson extends BaseEntity
     /**
      * @var Collection<int, TemplateRole>
      */
-    #[ORM\ManyToMany(targetEntity: TemplateRole::class, mappedBy: 'user')]
+    #[ORM\ManyToMany(targetEntity: TemplateRole::class, mappedBy: 'person')]
     private Collection $role;
 
     public function __construct()
@@ -129,7 +129,7 @@ class TemplatePerson extends BaseEntity
     {
         if (!$this->role->contains($role)) {
             $this->role->add($role);
-            $role->addUser($this);
+            $role->addPerson($this);
         }
 
         return $this;
