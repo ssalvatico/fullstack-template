@@ -16,6 +16,16 @@ class TemplateEntity extends BaseEntity
 {
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'El nombre debe tener al menos 3 caracteres.',
+        maxMessage: 'El nombre debe tener a lo sumo 50 caracteres.',
+    )]
+    #[Assert\Regex(
+        pattern: '/^[\p{L}\s]+$/u',
+        message: "El nómbre debe ser un nombre válido.",
+    )]
     private ?string $name = null;
 
     #[ORM\Column]

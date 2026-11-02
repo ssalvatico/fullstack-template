@@ -7,13 +7,12 @@ FRONTEND_DIR="./frontend/"
 
 .PHONY: build run stop restart logs \
         ssh-be ssh-db ssh-fe \
-        build_backend build_frontend \
         logs-fe logs-be \
         pull_images pull_composer pull_node
 
 
 ### Construcción de imágenes
-build: build_backend build_frontend
+build: pull_images
 	docker compose run --rm --no-deps php composer install
 	docker compose run --rm --no-deps frontend npm ci
 	@echo "Imágenes y dependencias listas. Ejecutá 'make run' para iniciar el proyecto."
@@ -60,3 +59,11 @@ clean:
 	docker compose down -v --rmi all --remove-orphans
 	docker rmi composer:2 node:24.15.0-alpine 2>/dev/null || true
 	rm -rf backend/app/vendor frontend/node_modules frontend/dist
+
+pull_images: pull_composer pull_node
+
+pull_composer:
+	docker pull composer:2
+
+pull_node:
+	docker pull node:24.15.0-alpine

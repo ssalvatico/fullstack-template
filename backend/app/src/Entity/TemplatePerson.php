@@ -12,9 +12,18 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 class TemplatePerson extends BaseEntity
 {
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
-    #[Assert\Length(max: 100, maxMessage: 'El nombre no puede superar los 100 caracteres.')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'El nombre debe tener al menos 3 caracteres.',
+        maxMessage: 'El nombre debe tener a lo sumo 50 caracteres.',
+    )]
+    #[Assert\Regex(
+        pattern: '/^[\p{L}\s]+$/u',
+        message: "El nómbre debe ser un nombre válido.",
+    )]
     private string $name;
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -25,11 +34,15 @@ class TemplatePerson extends BaseEntity
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotNull(message: 'El DNI es obligatorio.')]
-    #[Assert\Positive(message: 'El DNI debe ser mayor que cero.')]
+    #[Assert\Positive(message: 'El DNI debe ser mayor a cero.')]
     private int $dni;
 
     #[ORM\Column]
     private bool $alive = false;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Email(message: "El e-mail {{ value }} debe ser un e-mail válido.")]
+    private ?string $email = null;
 
     public function getName(): string
     {
@@ -75,6 +88,18 @@ class TemplatePerson extends BaseEntity
     public function setAlive(bool $alive): static
     {
         $this->alive = $alive;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }

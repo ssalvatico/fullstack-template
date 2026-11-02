@@ -12,6 +12,9 @@ export class EntityFormComponent {
   public fields = input<FormField[]>([]);
   public initial = input<EntityRow | null>(null);
   public relationOptions = input<Record<string, RelationOption[]>>({});
+  // Mensajes de validación devueltos por el backend (422)
+  public serverMessage = input<string | null>(null);
+  public serverFields = input<Record<string, string>>({});
 
   public save = output<EntityRow>();
   public cancel = output<void>();
@@ -44,6 +47,14 @@ export class EntityFormComponent {
 
     this.values.update(v => ({ ...v, [field.name]: selected }));
     this.clearError(field.name, selected);
+  }
+
+  serverErrorFor(name: string): string | null {
+    return this.serverFields()[name] ?? null;
+  }
+
+  hasFieldError(name: string): boolean {
+    return this.errors().has(name) || this.serverErrorFor(name) !== null;
   }
 
   isSelected(field: FormField, iri: string): boolean {

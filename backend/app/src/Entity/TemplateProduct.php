@@ -11,17 +11,28 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource]
 class TemplateProduct extends BaseEntity
 {
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'El nombre es obligatorio.')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'El nombre debe tener al menos 3 caracteres.',
+        maxMessage: 'El nombre debe tener a lo sumo 50 caracteres.',
+    )]
+    #[Assert\Regex(
+        pattern: '/^[\p{L}\s]+$/u',
+        message: "El nómbre debe ser un nombre válido.",
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type:'float')]
     #[Assert\NotNull(message: 'El precio es obligatorio.')]
     #[Assert\PositiveOrZero(message: 'El precio no puede ser negativo.')]
     private ?float $price = null;
-
+    
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'El SKU es obligatorio.')]
+    #[Assert\PositiveOrZero(message: 'El numero SKU no puede ser negativo.')]
     private ?string $sku = null;
 
     public function getName(): ?string

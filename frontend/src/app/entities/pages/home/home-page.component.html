@@ -13,6 +13,8 @@
       [fields]="fields()"
       [initial]="editingRow()"
       [relationOptions]="relationOptions()"
+      [serverMessage]="serverError()?.message ?? null"
+      [serverFields]="serverError()?.fields ?? {}"
       (save)="onSave($event)"
       (cancel)="closeForm()"
     ></app-entity-form>
