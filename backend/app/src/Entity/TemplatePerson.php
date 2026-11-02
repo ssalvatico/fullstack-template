@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TemplatePersonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -43,6 +45,17 @@ class TemplatePerson extends BaseEntity
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Email(message: "El e-mail {{ value }} debe ser un e-mail válido.")]
     private ?string $email = null;
+
+    /**
+     * @var Collection<int, TemplateRole>
+     */
+    #[ORM\ManyToMany(targetEntity: TemplateRole::class, mappedBy: 'user')]
+    private Collection $role;
+
+    public function __construct()
+    {
+        $this->role = new ArrayCollection();
+    }
 
     public function getName(): string
     {
@@ -100,6 +113,33 @@ class TemplatePerson extends BaseEntity
     public function setEmail(?string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TemplateRole>
+     */
+    public function getRole(): Collection
+    {
+        return $this->role;
+    }
+
+    public function addRole(TemplateRole $role): static
+    {
+        if (!$this->role->contains($role)) {
+            $this->role->add($role);
+            $role->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(TemplateRole $role): static
+    {
+        if ($this->role->removeElement($role)) {
+            $role->removeUser($this);
+        }
 
         return $this;
     }

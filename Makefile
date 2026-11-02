@@ -33,7 +33,7 @@ stop:
 	docker compose down
 
 restart:
-	docker compose restart
+	$(MAKE) stop && $(MAKE) run
 	@echo "Servicios reiniciados."
 
 
