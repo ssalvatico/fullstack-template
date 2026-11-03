@@ -64,11 +64,13 @@ services:
         HTTP_PROXY: ${HTTP_PROXY}
         HTTPS_PROXY: ${HTTPS_PROXY}
         NO_PROXY: ${NO_PROXY}
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      HOME: /tmp
     ports:
       - "4200:4200"
     volumes:
       - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
     command: sh -c "npm ci && npm start -- --host 0.0.0.0 --port 4200 --poll 1000"
     depends_on:
       - nginx
