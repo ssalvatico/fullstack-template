@@ -6,8 +6,11 @@
 }
 
 .sidebar-container {
-    flex: 0 0 250px;
+    flex: 0 0 230px;
     min-width: 200px;
+    /* display: flex; */
+    min-height: 100vh;
+    flex-direction: column;
 }
 
 .content-container {

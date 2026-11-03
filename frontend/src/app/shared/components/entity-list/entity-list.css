@@ -1,6 +1,6 @@
 .sidebar {
     background: var(--sidebar-bg);
-    min-height: 100vh;
+    min-height: 100%;
     padding: 1.5rem 1rem;
     box-sizing: border-box;
 }
