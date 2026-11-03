@@ -1,5 +1,6 @@
 import { Component, computed, input, output } from '@angular/core';
 import { EntityRow } from '../../services/entity-state.service';
+import { FormField } from '../../interfaces/hydra-docs';
 
 @Component({
   selector: 'app-entities-render-entity',
@@ -15,10 +16,26 @@ export class RenderEntityComponent {
   public create = output<void>();
   public edit = output<EntityRow>();
   public remove = output<EntityRow>();
+  public fields = input<FormField[]>([]);
 
   public columns = computed(() => {
-    const first = this.items()[0];
-    return first ? Object.keys(first).filter(key => !key.startsWith('@')) : [];
+    const ordered = this.fields().map(f => f.name);
+
+    const extra = new Set<string>();
+    for (const row of this.items()) {
+      for (const key of Object.keys(row)) {
+        if (!key.startsWith('@') && !ordered.includes(key)) extra.add(key);
+      }
+    }
+
+    return [...ordered, ...[...extra].sort()];
+  });
+
+  public sortedItems = computed(() => {
+    const idOf = (row: EntityRow) =>
+      Number(String(row['@id'] ?? '').split('/').pop()) || 0;
+
+    return [...this.items()].sort((a, b) => idOf(b) - idOf(a));
   });
 
   formatValue(value: unknown): string {

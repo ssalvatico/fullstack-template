@@ -5,6 +5,7 @@
       [items]="items()"
       [relationLabels]="relationLabels()"
       (create)="openCreate()"
+      [fields]="fields()"
       (edit)="openEdit($event)"
       (remove)="onDelete($event)"
     ></app-entities-render-entity>

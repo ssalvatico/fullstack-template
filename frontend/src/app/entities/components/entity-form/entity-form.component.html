@@ -36,40 +36,37 @@
           </label>
         } @else {
           <label class="form-label">
-            {{ field.name }}@if (field.required) {
-              <span class="required">*</span>
-            }
+            {{ field.name }}@if (field.required){<span class="required">*</span>}
           </label>
-
-          @if (field.type === 'relation' && field.multiple) {
-            <select
-              multiple
-              class="form-select form-control"
-              [class.is-invalid]="hasFieldError(field.name)"
-              (change)="onMultiSelect(field, $event)"
-            >
-              @for (opt of relationOptions()[field.name] ?? []; track opt.iri) {
-                <option
-                  [value]="opt.iri"
-                  [selected]="isSelected(field, opt.iri)"
-                >
-                  {{ opt.label }}
-                </option>
-              }
-            </select>
-          } @else if (field.type === 'relation') {
-            <select
-              class="form-select form-control"
-              [class.is-invalid]="hasFieldError(field.name)"
-              [value]="values()[field.name] ?? ''"
-              (change)="onInput(field, $event)"
-            >
-              <option value="">-- Seleccionar --</option>
+          
+          @if(field.type === 'relation' && relationOptions()[field.name].length){
+            @if (field.multiple) {
+              <div class="checkbox-list" [class.is-invalid]="hasFieldError(field.name)">
+                @for (opt of relationOptions()[field.name] ?? []; track opt.iri) {
+                  <label class="checkbox-item">
+                    <input
+                    type="checkbox"
+                    [checked]="isSelected(field, opt.iri)"
+                    (change)="onCheckToggle(field, opt.iri, $event)"
+                  />{{ opt.label }}
+                  </label>
+                }
+              </div>
+            }
+            @else {
+              <select
+                class="form-select form-control"
+                [class.is-invalid]="hasFieldError(field.name)"
+                [value]="values()[field.name] ?? ''"
+                (change)="onInput(field, $event)"
+              ><option value="">-- Seleccionar --</option>
               @for (opt of relationOptions()[field.name] ?? []; track opt.iri) {
                 <option [value]="opt.iri">{{ opt.label }}</option>
               }
-            </select>
-          } @else {
+              </select>
+            }
+          } 
+          @else if(field.type !== 'relation'){
             <input
               class="form-control"
               [class.is-invalid]="hasFieldError(field.name)"

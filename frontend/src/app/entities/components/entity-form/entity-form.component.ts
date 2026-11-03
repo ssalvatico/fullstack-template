@@ -49,6 +49,17 @@ export class EntityFormComponent {
     this.clearError(field.name, selected);
   }
 
+  onCheckToggle(field: FormField, iri: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    const current = (this.values()[field.name] as string[] | undefined) ?? [];
+    const next = checked
+      ? [...current.filter(i => i !== iri), iri]
+      : current.filter(i => i !== iri);
+
+    this.values.update(v => ({ ...v, [field.name]: next }));
+    this.clearError(field.name, next);
+  }
+
   serverErrorFor(name: string): string | null {
     return this.serverFields()[name] ?? null;
   }
