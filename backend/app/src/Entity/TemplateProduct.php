@@ -19,10 +19,6 @@ class TemplateProduct extends BaseEntity
         minMessage: 'El nombre debe tener al menos 3 caracteres.',
         maxMessage: 'El nombre debe tener a lo sumo 50 caracteres.',
     )]
-    #[Assert\Regex(
-        pattern: '/^[\p{L}\s]+$/u',
-        message: "El nómbre debe ser un nombre válido.",
-    )]
     private ?string $name = null;
 
     #[ORM\Column(type:'float')]

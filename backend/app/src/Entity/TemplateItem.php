@@ -23,8 +23,7 @@ class TemplateItem extends BaseEntity
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: 'Debe existir al menos una entidad de tipo TemplateEntity para relacionar.')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?TemplateEntity $entity = null;
 
     public function getName(): ?string
