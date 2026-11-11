@@ -1,26 +1,33 @@
-## Instalar las dependencias y construir las imágenes:
-    make build
+# Fullstack Template
 
-## Para traer la base de datos:
-    make ssh-be
-    bin/console doc:mi:mi
+A starter template with a Symfony + API Platform backend and an Angular frontend, ready to run with Docker.
 
-## Iniciar los contenedores:
-    make run
+## Requirements
 
-## Acceder a los servicios:
-Frontend: http://localhost:4200  
-Backend: http://localhost:8080/api  
-phpMyAdmin: http://localhost:8081  
+- Docker and Docker Compose
+- Make (optional)
 
-## Comandos útiles
-make stop: detener los contenedores.  
-make restart: reiniciar los contenedores.  
-make logs: ver los logs de todos los servicios.  
-make logs-be: ver los logs del backend.  
-make logs-fe: ver los logs del frontend.  
-make ssh-be: acceder al contenedor PHP.  
-make ssh-fe: acceder al contenedor del frontend.  
-make ssh-db: acceder a la consola de MySQL.  
+## Getting started
 
-Requisitos: Docker, Docker Compose, Make, PHP, Composer, Node.js y npm.
+```bash
+make build
+make run
+```
+
+## Endpoints
+
+- Frontend: http://localhost:4200
+- API: http://localhost:8080/api
+- phpMyAdmin: http://localhost:8081
+
+## Useful commands
+
+```bash
+make stop      # stop services
+make restart   # restart services
+make logs      # follow logs
+```
+
+## License
+
+Internal use only.
